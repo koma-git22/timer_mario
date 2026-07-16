@@ -43,20 +43,6 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# a. 画像が切り替わったかどうかの「状態」を記憶する変数を初期化
-if "image_changed" not in st.session_state:
-    st.session_state.image_changed = False
-
-# b. ボタンが押されたら、状態を「切り替え後（True）」に変更する
-if st.button("スタート！"):
-    st.session_state.image_changed = True
-
-# c. 状態に応じて表示する画像を分岐させる
-if st.session_state.image_changed:
-    st.image(AFTER_IMAGE, caption="変化後の画像")
-else:
-    st.image(BEFORE_IMAGE, caption="最初の画像")
-
 
 # 2. 状態管理（Streamlitでタイマーの状態を記憶する仕組み）
 if "total_seconds" not in st.session_state:
@@ -139,7 +125,10 @@ if image_path:
     # 左右に余白を作り、真ん中に300px幅の画像を安全に配置
     c1, c2, c3 = st.columns([1, 2, 1])
     with c2:
-        st.image('https://github.com/koma-git22/timer_mario/blob/main/mario-1.png?raw=true', use_container_width=True)
+        if st.session_state.completed:
+            st.image(AFTER_IMAGE, use_container_width=True) # 押した後の画像
+        else:
+            st.image(BEFORE_IMAGE, use_container_width=True) # 押す前の画像
 else:
     st.info("🍞 キャラクター画像 (pan.jpg) をプログラムと同じフォルダに置いてね！")
 
@@ -183,5 +172,20 @@ if st.session_state.running and st.session_state.current_seconds > 0:
         st.session_state.running = False
         st.session_state.completed = True
         st.session_state.is_time_up = True
+
+# a. 画像が切り替わったかどうかの「状態」を記憶する変数を初期化
+if "image_changed" not in st.session_state:
+    st.session_state.image_changed = False
+
+# b. ボタンが押されたら、状態を「切り替え後（True）」に変更する
+if st.button("スタート！"):
+    st.session_state.image_changed = True
+
+# c. 状態に応じて表示する画像を分岐させる
+if st.session_state.image_changed:
+    st.image(AFTER_IMAGE, caption="変化後の画像")
+else:
+    st.image(BEFORE_IMAGE, caption="最初の画像")
+
         
     st.rerun()
